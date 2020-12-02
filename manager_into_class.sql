@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2020 at 04:16 AM
+-- Generation Time: Dec 02, 2020 at 09:59 AM
 -- Server version: 10.4.16-MariaDB
 -- PHP Version: 7.4.12
 
@@ -28,10 +28,18 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `discuss` (
-  `IDPost` int(50) NOT NULL,
   `email` varchar(50) NOT NULL,
   `content` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `discuss`
+--
+
+INSERT INTO `discuss` (`email`, `content`) VALUES
+('admin@gmail.com', 'af'),
+('admin@gmail.com', 'asd'),
+('admin@gmail.com', 'dddsa');
 
 -- --------------------------------------------------------
 
@@ -53,8 +61,6 @@ CREATE TABLE `poster` (
 --
 
 INSERT INTO `poster` (`IDPost`, `email`, `title`, `content`, `url`, `file`) VALUES
-(4, 'admin@gmail.com', 'dsa', 'ddda', '', NULL),
-(7, 'admin@gmail.com', 'asdxc', 'fffsa', '', NULL),
 (8, 'admin@gmail.com', 'frdgsfdasd', 'ffdcv', '', NULL),
 (9, 'admin@gmail.com', 'adaa', 'asd', '', NULL),
 (10, 'admin@gmail.com', 'asd', 'dddsa', '', NULL);
@@ -78,8 +84,11 @@ CREATE TABLE `user_class` (
 INSERT INTO `user_class` (`ID`, `email`, `active`) VALUES
 ('gv', 'admin@gmail.com', 0),
 ('gv', 'as@gmail.com', 0),
+('st', 'duyntkh@gmail.com', 1),
+('gv', 'duyntkhcm@gmail.com', 1),
 ('gv', 'sd@gmail.com', 0),
-('st', 'st@gmail.com', 0);
+('st', 'st@gmail.com', 0),
+('st', 'sv@gmail.com', 0);
 
 --
 -- Indexes for dumped tables
@@ -89,8 +98,7 @@ INSERT INTO `user_class` (`ID`, `email`, `active`) VALUES
 -- Indexes for table `discuss`
 --
 ALTER TABLE `discuss`
-  ADD PRIMARY KEY (`email`),
-  ADD KEY `fk_idpost` (`IDPost`);
+  ADD KEY `fk_iddiscuss` (`email`);
 
 --
 -- Indexes for table `poster`
@@ -122,7 +130,7 @@ ALTER TABLE `poster`
 -- Constraints for table `discuss`
 --
 ALTER TABLE `discuss`
-  ADD CONSTRAINT `fk_idpost` FOREIGN KEY (`IDPost`) REFERENCES `poster` (`IDPost`);
+  ADD CONSTRAINT `fk_iddiscuss` FOREIGN KEY (`email`) REFERENCES `user_class` (`email`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
