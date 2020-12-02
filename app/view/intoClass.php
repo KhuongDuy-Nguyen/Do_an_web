@@ -67,30 +67,32 @@ open_database();
 
 
     <?php
-
     require_once('../base/db.php');
-
     $error = '';
     $title = '';
     $file = '';
     $content = '';
     $id = '';
     $url = '';
+    $message = '';
 
     if (isset($_POST['action'])){
         $action = $_POST['action'];
         if ($action == 'add'){
-            if(isset($_POST['title']) && isset($_POST['content']) || isset($_POST['fileToUpload']) || isset($_POST['url'])){
+            if(isset($_POST['title']) && isset($_POST['content'])){
                 $title = $_POST['title'];
                 $content = $_POST['content'];
-                $file = $_POST['file'];
                 $url = $_POST['url'];
                 if(empty($title)){
-                    $error = 'Write something in Title';
+                    $error = "Write something in Title";
+
                 }elseif (empty($content)){
                     $error = 'Write something in content';
                 }else{
-                    add_poster($title,$content,$url,$file);
+                    $result = add_poster($title,$content,$url,$file);
+                    if ($result['code']==0){
+                        $message = 'Add success.';
+                    }
                 }
             }
         }elseif ($action == 'delete'){
@@ -99,7 +101,12 @@ open_database();
                 if(empty($id)){
                     $error = 'Choose ID Post you want to delete';
                 }else{
-                    delete_poster($id);
+                    $result = delete_poster($id);
+                    if ($result['code']==0){
+                        $message = 'Delete success.';
+                    }else{
+                        $error = 'An error occurred. Please try again later';
+                    }
                 }
             }
         }
@@ -107,7 +114,7 @@ open_database();
     ?>
 
 
-    <div class="container  ">
+    <div class="container">
         <img src="https://gstatic.com/classroom/themes/img_code.jpg" class="img-fluid col-12 mt-3" alt="">
         <div class="card-deck mt-3 ">
             <!-- card message -->
@@ -117,7 +124,6 @@ open_database();
                 $content = '';
                 $idAsk = '';
                 $idPost='';
-                $error = '';
                 //Vong lap
                 $sql_poster = "SELECT * FROM poster";
                 if (isset($_GET["IDPost"])) {
@@ -146,8 +152,21 @@ open_database();
             </div>
             <!-- end card message -->
             <div class="col-2 mt-3">
-                <button type="button" class="btn btn-outline-success fas fa-plus" data-toggle="modal" data-target="#new-post-dialog"> Add Post</button>
-                <button type="button" class="btn btn-outline-danger fas fa-trash-alt mt-3" data-toggle="modal" data-target="#delete-post-dialog"> Delete Post</button>
+                <div class="button">
+                    <button type="button" class="btn btn-outline-success fas fa-plus" data-toggle="modal" data-target="#new-post-dialog"> Add Post</button>
+                    <button type="button" class="btn btn-outline-danger fas fa-trash-alt mt-3" data-toggle="modal" data-target="#delete-post-dialog"> Delete Post</button>
+                </div>
+                <div class="error mt-3">
+                    <?php
+                    if (!empty($error)) {
+                        echo "<div class='alert alert-danger text-center'>$error</div>";
+                    }else if (!empty($message)){
+                        echo "<div class='alert alert-success text-center'>$message</div>";
+                    }else{
+                        //nothing
+                    }
+                    ?>
+                </div>
             </div>
         </div>
     </div>
@@ -184,11 +203,6 @@ open_database();
                             <input type="hidden" name="action" value="add">
                             <button type="submit" class="btn btn-success">Add</button>
                         </div>
-                        <?php
-                        if (!empty($error)) {
-                            echo "<div class='alert alert-danger'>$error</div>";
-                        }
-                        ?>
                     </div>
                 </form>
             </div>
@@ -211,11 +225,6 @@ open_database();
                                 <input type="hidden" name="action" value="delete">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </div>
-                            <?php
-                            if (!empty($error)) {
-                                echo "<div class='alert alert-danger'>$error</div>";
-                            }
-                            ?>
                         </div>
                     </div>
                 </form>

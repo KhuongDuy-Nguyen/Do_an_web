@@ -60,138 +60,59 @@ open_database();
         <li><a href="#"><span class="fas fa-sign-out-alt"></span>  Logout</a></li>
     </ul>
 </nav>
+<?php
+    $email = '';
+    $content = '';
+    if (isset($_POST['content'])){
+
+        $content = $_POST['content'];
+        $email = $_POST['email'];
+        if(empty($content)){
+            $error = 'ask something...';
+        }else{
+            discuss($email,$content);
+        }
+    }
+?>
+
 
 <!-- khu vuc hoi va tra loi -->
 <div class="container mt-3">
-    <div class="row">
-        <div class="col-9">
-            <!-- khu vuc post bai -->
+    <div class="screen">
+        <div class="card">
             <?php
-            require_once('../base/db.php');
-            $content = '';
-            $idAsk = '';
-            $idPost='';
-            $error = '';
-            //Vong lap
-            $sql_poster = "SELECT * FROM poster";
-            if (isset($_GET["IDPost"])) {
-                $post_main = $_GET["IDPost"];
-                $sql_poster .= " WHERE IDPost='$post_main'";
+            $sql_discuss= "SELECT * FROM discuss ";
+            if (isset($_GET["email"])) {
+                $email = $_GET["email"];
+                $sql_discuss .= " WHERE email='$email'";
             }
-            $result_poster = $conn->query($sql_poster);
-            while ($post=$result_poster->fetch_assoc()) {
+            $result = $conn->query($sql_discuss);
+            while ($post=$result->fetch_assoc()) {
                 ?>
-                <!-- Khu vuc dang bai -->
-                <div class="card post mt-3">
-                    <div class="card-body">
-                        <h4 class="card-title"><?= $post['email'] ?></h4>
-                        <h5 class="card-text"><?= $post['title'] ?></h5>
-                        <p class="card-text"><?= $post['content'] ?></p>
-                        <p class="card-text"><?= $post['url'] ?></p>
-                        <p class="card-text"><?= $post['file'] ?></p>
-                    </div>
+                <div class="card-body">
+                    <h5 class="card-text"><?= $post['email'] ?></h5>
+                    <p class="card-text"><?= $post['content'] ?></p>
                 </div>
-                <!-- khu vuc thao luan -->
-                <?php
+            <?php
             }
             ?>
         </div>
-
-        <div class="col-3">
-            <!-- khu vuc button -->
-            <button name="submit"  type="button" class="btn btn-outline-success fas fa-plus" data-toggle="modal" data-target="#add-discuss-dialog"> Add Discuss</button>
-            <button type="button" class="btn btn-outline-danger fas fa-trash-alt mt-3" data-toggle="modal" data-target="#remove-discuss-dialog"> Remove Discuss</button>
-        </div>
     </div>
-</div>
-
-<?php
-$sql_ask = "SELECT * FROM discuss";
-if (isset($_GET["IDPost"])) {
-    $post_ask = $_GET["IDPost"];
-    $sql_ask .= " WHERE IDPost='$post_ask'";
-}
-$result_ask = $conn->query($sql_ask);
-while ($ask=$result_ask->fetch_assoc()) {
-?>
-    <div class="card-body">
-        <a class="card-title"><?= $ask['email'] ?></a>
-        <p class="card-text"><?= $ask['content'] ?></p>
-    </div>
-<?php
-}
-?>
-<div class="ask_and_answer">
-
-    <!-- End vong lap trao doi -->
-    <form method="post" novalidate enctype="multipart/form-data">
-        <div class="form-group">
-            <input type="hidden" id="idPost" name="idPost" value="<?=$idPost = 1?>">
-            <input type="hidden" id="id" name="id" value="<?=$idAsk = 1?>">
+    <div class="discuss">
+        <form method="post" novalidate enctype="multipart/form-data">
             <div class="form-group">
-                <label for="content"></label>
-                <input type="text" id="content" name="content" value="<?=$content?>" class="form-control" placeholder="Message"></div>
-            <button type="submit" class="btn btn-success">Send</button>
-        </div>
-    </form>
-</div>
-
-
-<div class="modal fade" id="add-discuss-dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="post" action="" novalidate enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="idPost">ID Post</label>
-                        <input value="<?= $id ?>" type="text" name="idPost" placeholder="ID you want to add discuss" class="form-control" id="idPost"/>
-                    </div>
+                <input type="hidden" id="email" name="email" value="ad@gmail.com">
+                <div class="input-group">
+                    <label for="content"></label>
+                    <input type="text" id="content" name="content" value="<?=$content?>" class="form-control" placeholder="Ask something...">
+                    <button type="submit" class="btn btn-success">Send</button>
                 </div>
-                <div class="modal-footer">
-                    <div class="form-group">
-                        <div class="form-group">
-                            <input type="hidden" name="action" value="add">
-                            <button type="submit" class="btn btn-success">Add</button>
-                        </div>
-                        <?php
-                        if (!empty($error)) {
-                            echo "<div class='alert alert-danger'>$error</div>";
-                        }
-                        ?>
-                    </div>
-                </div>
-            </form>
-        </div>
+
+            </div>
+        </form>
     </div>
 </div>
 
-<div class="modal fade" id="remove-discuss-dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="post" action="" novalidate enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="idPost">ID Post</label>
-                        <input value="<?= $id ?>" type="text" name="idPost" placeholder="ID you want to add discuss" class="form-control" id="idPost"/>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="form-group">
-                        <div class="form-group">
-                            <input type="hidden" name="action" value="remove">
-                            <button type="submit" class="btn btn-danger">Remove</button>
-                        </div>
-                        <?php
-                        if (!empty($error)) {
-                            echo "<div class='alert alert-danger'>$error</div>";
-                        }
-                        ?>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 
 </body>

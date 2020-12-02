@@ -59,6 +59,7 @@
     require_once('../base/db.php');
     $email = '';
     $name = '';
+    $message = '';
     if(isset($_POST['action'])){
         $action = $_POST['action'];
         if ($action == 'invite' && isset($_POST['name']) && isset($_POST['email'])){
@@ -68,13 +69,18 @@
                 $error = 'Please input email you want to invite ';
             }
             else {
-
-                invite_user($name,$email);
+                $result=invite_user($name,$email);
+                if ($result['code']==0){
+                    $message = 'Invite success.';
+                }else if ($result['code']==1){
+                    $error = 'This email already exits';
+                }else{
+                    $error = 'An error occured. Please try again later';
+                }
             }
         }else if ($action == 'delete' && isset($_POST['name']) && isset($_POST['email'])){
             $name = $_POST['name'];
             $email = $_POST['email'];
-
             if (empty($email)) {
                 $error = 'Please input email you want to kick out ';
             }
@@ -99,14 +105,13 @@
               <hr>
               <div class="card-deck teacher">
                   <?php
-                  $sql_user= "SELECT * FROM user_class where ID = 'gv'";
+                  $sql_user= "SELECT * FROM user_class where ID = 'gv' and active = 1";
                   $result_gv = $conn->query($sql_user);
                   while ($post=$result_gv->fetch_assoc()) {
                   ?>
                   <div class="card">
                       <div class="card-body">
-                          <a class="card-title"><img src="image/1.jpg" alt="Picture teacher" class="rounded-circle"
-                           style="width:80px;height:80px"> <?= $post['email'] ?></a>
+                          <a class="card-title"><?= $post['email'] ?></a>
                       </div>
                   </div>
                   <?php
@@ -120,15 +125,13 @@
               <div class="card-deck student">
                   <!--Card Student ID-->
                   <?php
-                  $sql_user= "SELECT * FROM user_class where ID = 'st'";
+                  $sql_user= "SELECT * FROM user_class where ID = 'st' and active = 1";
                   $result_st = $conn->query($sql_user);
                   while ($post=$result_st->fetch_assoc()) {
                   ?>
                   <div class="card">
                       <div class="card-body">
-                          <a class="card-title"><img src="image/1.jpg" alt="Picture teacher" class="rounded-circle"
-                                                     style="width:80px;height:80px"><?= $post['email'] ?></a>
-                          <p class="card-text">ID</p>
+                          <a class="card-title"><?= $post['email'] ?></a>
                       </div>
                   </div>
                       <?php
@@ -141,6 +144,18 @@
           <div class="col-2">
                 <button name="submit"  type="button" class="btn btn-outline-success fas fa-plus" data-toggle="modal" data-target="#new-user-dialog"> Invite</button>
                 <button type="button" class="btn btn-outline-danger fas fa-user-slash mt-3" data-toggle="modal" data-target="#confirm-delete"> Delete</button>
+              <div class="error mt-3">
+                  <?php
+                  if (!empty($error)) {
+                      echo "<div class='alert alert-danger text-center'>$error</div>";
+                  }else if(!empty($message)){
+                      echo "<div class='alert alert-success text-center'>$message</div>";
+                  }else{
+                      //nothing
+                  }
+                  ?>
+              </div>
+
           </div>
       </div>
   </div>
