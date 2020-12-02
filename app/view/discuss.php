@@ -64,7 +64,7 @@ open_database();
 <!-- khu vuc hoi va tra loi -->
 <div class="container mt-3">
     <div class="row">
-        <div class="col-7">
+        <div class="col-9">
             <!-- khu vuc post bai -->
             <?php
             require_once('../base/db.php');
@@ -91,13 +91,16 @@ open_database();
                         <p class="card-text"><?= $post['file'] ?></p>
                     </div>
                 </div>
+                <!-- khu vuc thao luan -->
                 <?php
             }
             ?>
         </div>
 
-        <div class="col-5">
-            <!-- khu vuc thao luan -->
+        <div class="col-3">
+            <!-- khu vuc button -->
+            <button name="submit"  type="button" class="btn btn-outline-success fas fa-plus" data-toggle="modal" data-target="#add-discuss-dialog"> Add Discuss</button>
+            <button type="button" class="btn btn-outline-danger fas fa-trash-alt mt-3" data-toggle="modal" data-target="#remove-discuss-dialog"> Remove Discuss</button>
         </div>
     </div>
 </div>
@@ -132,4 +135,63 @@ while ($ask=$result_ask->fetch_assoc()) {
         </div>
     </form>
 </div>
+
+
+<div class="modal fade" id="add-discuss-dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="" novalidate enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="idPost">ID Post</label>
+                        <input value="<?= $id ?>" type="text" name="idPost" placeholder="ID you want to add discuss" class="form-control" id="idPost"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <input type="hidden" name="action" value="add">
+                            <button type="submit" class="btn btn-success">Add</button>
+                        </div>
+                        <?php
+                        if (!empty($error)) {
+                            echo "<div class='alert alert-danger'>$error</div>";
+                        }
+                        ?>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="remove-discuss-dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="" novalidate enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="idPost">ID Post</label>
+                        <input value="<?= $id ?>" type="text" name="idPost" placeholder="ID you want to add discuss" class="form-control" id="idPost"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <input type="hidden" name="action" value="remove">
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                        </div>
+                        <?php
+                        if (!empty($error)) {
+                            echo "<div class='alert alert-danger'>$error</div>";
+                        }
+                        ?>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 </body>

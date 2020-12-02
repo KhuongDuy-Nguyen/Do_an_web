@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2020 at 03:17 AM
+-- Generation Time: Dec 02, 2020 at 04:16 AM
 -- Server version: 10.4.16-MariaDB
 -- PHP Version: 7.4.12
 
@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `discuss` (
-  `IDPost` varchar(20) NOT NULL,
+  `IDPost` int(50) NOT NULL,
   `email` varchar(50) NOT NULL,
   `content` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -76,9 +76,9 @@ CREATE TABLE `user_class` (
 --
 
 INSERT INTO `user_class` (`ID`, `email`, `active`) VALUES
-('st', 'ad@gmail.com', 0),
 ('gv', 'admin@gmail.com', 0),
 ('gv', 'as@gmail.com', 0),
+('gv', 'sd@gmail.com', 0),
 ('st', 'st@gmail.com', 0);
 
 --
@@ -89,7 +89,8 @@ INSERT INTO `user_class` (`ID`, `email`, `active`) VALUES
 -- Indexes for table `discuss`
 --
 ALTER TABLE `discuss`
-  ADD PRIMARY KEY (`email`);
+  ADD PRIMARY KEY (`email`),
+  ADD KEY `fk_idpost` (`IDPost`);
 
 --
 -- Indexes for table `poster`
@@ -112,6 +113,16 @@ ALTER TABLE `user_class`
 --
 ALTER TABLE `poster`
   MODIFY `IDPost` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `discuss`
+--
+ALTER TABLE `discuss`
+  ADD CONSTRAINT `fk_idpost` FOREIGN KEY (`IDPost`) REFERENCES `poster` (`IDPost`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
